@@ -38,13 +38,15 @@ class Zendesk_Admin {
    */
   public function __construct() {
     add_action( 'admin_init', array( $this, 'admin_init' ) );
+    add_action( 'admin_menu', array( $this, 'admin_menu' ) );
   }
 
   /**
    * Admin Settings
    */
   public function admin_menu() {
-    add_submenu_page( 'settings', __( 'Zendesk', 'zdw' ), __( 'Zendesk Widget', 'zdw' ), 'settings', 'settings-zendesk-admin', array( $this, 'admin_page' ) );
+
+    add_options_page( 'Zendesk Admin Help Widget', 'Zendesk Help', 'manage_options', 'zendesk-admin', array( $this, 'admin_page' ));
   }
 
   public function admin_page() {
