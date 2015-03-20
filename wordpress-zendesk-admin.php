@@ -74,7 +74,7 @@ class Zendesk_Admin {
     );
 
     add_settings_section(
-      'rcp_terms_admin_section', // ID
+      'zendesk_admin_section', // ID
       '', // Title
       array( $this, 'admin_print_section_info' ), // Callback
       'zendesk-admin-settings' // Page
@@ -85,14 +85,14 @@ class Zendesk_Admin {
       'Zendesk Script', // Title
       array( $this, 'zendesk_script_callback' ), // Callback
       'zendesk-admin-settings', // Page
-      'rcp_terms_admin_section' // Section
+      'zendesk_admin_section' // Section
     );
   }
 
   public function zendesk_script_callback()
   {
     printf(
-      '<input type="textarea" id="zendesk_script" name="zendesk_admin_options[zendesk_script]" value="%s" placeholder="<script>" />',
+      '<textarea rows="10" cols="80" type="textarea" id="zendesk_script" name="zendesk_admin_options[zendesk_script]" value="%s" placeholder="<script>"></textarea>',
       isset( $this->options['zendesk_script'] ) ? esc_attr( $this->options['zendesk_script']) : ''
     );
   }
