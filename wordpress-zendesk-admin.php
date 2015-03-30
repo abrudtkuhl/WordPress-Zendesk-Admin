@@ -17,12 +17,8 @@
  * @since 1.0.0
  */
 
-
-
 // TODO
-// - admin capabilities
-// - add submenu to Settings
-
+// - render widget in admin
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -51,7 +47,7 @@ class Zendesk_Admin {
 
   public function admin_page() {
     $this->options = get_option( 'zendesk_admin_options' );
-    ?>
+  ?>
     <div class="wrap">
       <h2>Zendesk Admin Widget</h2>
       <form method="post" action="options.php">
