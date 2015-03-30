@@ -33,7 +33,9 @@ class Zendesk_Admin {
    * Constructor
    */
   public function __construct() {
+    $this->options = get_option( 'zendesk_admin_options' );
     add_action( 'admin_init', array( $this, 'admin_init' ) );
+    add_action( 'admin_footer', array( $this, 'admin_widget' ) );
     add_action( 'admin_menu', array( $this, 'admin_menu' ) );
   }
 
@@ -41,13 +43,10 @@ class Zendesk_Admin {
    * Admin Settings
    */
   public function admin_menu() {
-
     add_options_page( 'Zendesk Admin Help Widget', 'Zendesk Help', 'manage_options', 'zendesk-admin', array( $this, 'admin_page' ));
   }
 
-  public function admin_page() {
-    $this->options = get_option( 'zendesk_admin_options' );
-  ?>
+  public function admin_page() { ?>
     <div class="wrap">
       <h2>Zendesk Admin Widget</h2>
       <form method="post" action="options.php">
@@ -59,7 +58,6 @@ class Zendesk_Admin {
         ?>
       </form>
     </div>
-
   <?php }
 
   public function admin_init() {
@@ -99,12 +97,19 @@ class Zendesk_Admin {
 
   public function sanitize( $input )
   {
+    return $input;
+
+    // TODO: do this
     $new_input = array();
 
     if( isset( $input['zendesk_script'] ) )
       $new_input['zendesk_script'] = sanitize_text_field( $input['zendesk_script'] );
 
     return $new_input;
+  }
+
+  public function admin_widget() {
+    echo( $this->options['zendesk_script'] );
   }
 }
 
