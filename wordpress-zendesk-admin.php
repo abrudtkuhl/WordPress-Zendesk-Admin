@@ -92,11 +92,10 @@ class Zendesk_Admin {
   public function zendesk_script_callback()
   {
     printf(
-      '<textarea rows="10" cols="80" type="textarea" id="zendesk_script" name="zendesk_admin_options[zendesk_script]" value="%s" placeholder="<script>"></textarea>',
+      '<textarea rows="10" cols="80" type="textarea" id="zendesk_script" name="zendesk_admin_options[zendesk_script]" placeholder="">%s</textarea>',
       isset( $this->options['zendesk_script'] ) ? esc_attr( $this->options['zendesk_script']) : ''
     );
   }
-
 
   public function admin_print_section_info() {
     print 'Enter Zendesk Details';
