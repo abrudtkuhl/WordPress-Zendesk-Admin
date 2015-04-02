@@ -17,9 +17,6 @@
  * @since 1.0.0
  */
 
-// TODO
-// - render widget in admin
-
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class Zendesk_Admin {
@@ -69,9 +66,24 @@ class Zendesk_Admin {
 
     add_settings_section(
       'zendesk_admin_section', // ID
-      '', // Title
+      'Widget Options', // Title
       array( $this, 'admin_print_section_info' ), // Callback
       'zendesk-admin-settings' // Page
+    );
+
+    add_settings_field(
+      'zendesk_id', // ID
+      'Zendesk Subdomain', // Title
+      array( $this, 'zendesk_id_callback' ), // Callback
+      'zendesk-admin-settings', // Page
+      'zendesk_admin_section' // Section
+    );
+
+    add_settings_section(
+      'zendesk_admin_advanced_section',
+      'Advanced Options',
+      array( $this, 'admin_print_advanced_instructions'),
+      'zendesk-admin-settings'
     );
 
     add_settings_field(
@@ -79,7 +91,15 @@ class Zendesk_Admin {
       'Zendesk Script', // Title
       array( $this, 'zendesk_script_callback' ), // Callback
       'zendesk-admin-settings', // Page
-      'zendesk_admin_section' // Section
+      'zendesk_admin_advanced_section' // Section
+    );
+  }
+
+  public function zendesk_id_callback()
+  {
+    printf(
+      '<input type="text" id="zendesk_id" name="zendesk_admin_options[zendesk_id]" placeholder="mysite" value="%s" /> .zendesk.com',
+      isset( $this->options['zendesk_id'] ) ? esc_attr( $this->options['zendesk_id']) : ''
     );
   }
 
@@ -95,11 +115,14 @@ class Zendesk_Admin {
     print 'Enter Zendesk Details';
   }
 
+  public function admin_print_advanced_instructions() {
+    print 'ADVANCED USE ONLY';
+  }
+
   public function sanitize( $input )
   {
     return $input;
 
-    // TODO: do this
     $new_input = array();
 
     if( isset( $input['zendesk_script'] ) )
@@ -109,8 +132,17 @@ class Zendesk_Admin {
   }
 
   public function admin_widget() {
-    echo( $this->options['zendesk_script'] );
-  }
+    $current_user = wp_get_current_user();
+    ?>
+      <!-- Start of Zendesk Widget script -->
+      <script>/*<![CDATA[*/window.zEmbed||function(e,t){var n,o,d,i,s,a=[],r=document.createElement("iframe");window.zEmbed=function(){a.push(arguments)},window.zE=window.zE||window.zEmbed,r.src="javascript:false",r.title="",r.role="presentation",(r.frameElement||r).style.cssText="display: none",d=document.getElementsByTagName("script"),d=d[d.length-1],d.parentNode.insertBefore(r,d),i=r.contentWindow,s=i.document;try{o=s}catch(c){n=document.domain,r.src='javascript:var d=document.open();d.domain="'+n+'";void(0);',o=s}o.open()._l=function(){var o=this.createElement("script");n&&(this.domain=n),o.id="js-iframe-async",o.src=e,this.t=+new Date,this.zendeskHost=t,this.zEQueue=a,this.body.appendChild(o)},o.write('<body onload="document._l();">'),o.close()}("//assets.zendesk.com/embeddable_framework/main.js","<?php echo $this->options['zendesk_id'] ?>.zendesk.com");/*]]>*/</script>
+      <!-- End of Zendesk Widget script -->
+      <script>
+        zE(function() {
+          zE.identify({name: '<?php echo $current_user->display_name; ?>', email: '<?php echo $current_user->user_email; ?>', externalId: '<?php echo $current_user->ID; ?>'});
+        });
+      </script>
+  <?php }
 }
 
 if ( is_admin() ) {
