@@ -71,12 +71,11 @@ class Zendesk_Admin {
       'zendesk-admin-settings' // Page
     );
 
-    add_settings_field(
-      'zendesk_enabled', // ID
-      'Enable Zendesk Help Widget', // Title
-      array( $this, 'zendesk_enabled_callback' ), // Callback
-      'zendesk-admin-settings', // Page
-      'zendesk_admin_section' // Section
+    add_settings_section(
+      'zendesk_admin_scripts',
+      '',
+      array( $this, 'admin_scripts' ),
+      'zendesk-admin-settings'
     );
 
     add_settings_field(
@@ -86,11 +85,19 @@ class Zendesk_Admin {
       'zendesk-admin-settings', // Page
       'zendesk_admin_section' // Section
     );
+
+    add_settings_field(
+      'zendesk_enabled', // ID
+      'Enable Zendesk Help Widget', // Title
+      array( $this, 'zendesk_enabled_callback' ), // Callback
+      'zendesk-admin-settings', // Page
+      'zendesk_admin_section' // Section
+    );
   }
 
   public function zendesk_enabled_callback()
   {
-    echo '<input type="checkbox" id="zendesk_enabled" name="zendesk_admin_options[zendesk_enabled]" value="1"' . checked( 1,  $this->options['zendesk_enabled'], false ) . '/>';
+    echo '<input type="checkbox" id="zendesk_enabled" name="zendesk_admin_options[zendesk_enabled]" value="1" disabled="disabled" ' . checked( 1,  $this->options['zendesk_enabled'], false ) . '/><small><i><span id="enable-check-instructions">Turn on the widget in WP Admin</a></i></small>';
   }
 
   public function zendesk_id_callback()
@@ -103,26 +110,34 @@ class Zendesk_Admin {
   }
 
   public function admin_print_section_info() {
-    echo '
-      <img src="https://d16cvnquvjw7pr.cloudfront.net/www/img/p-brand/downloads/Logo/Zendesk_logo_RGB.png" alt="Zendesk" width="150" style="float: right; margin-top: -80px;" /><br />
-      In order to use this plugin, you will need a <a href="http://zendesk.com" taret="_blank">Zendesk account</a> with the chat widget enabled.<br />You can customize the Zendesk Widget with options like colors, widget placement, etc.<br /><br />
-      <a id="zendesk-chat-widget-link" href="https://www.zendesk.com/embeddables/#widget" class="button" target="_blank">Setup and Customize Zendesk Widget</a>
-      <script>
-        jQuery(function() {
-          if (jQuery("#zendesk_id").val() != "")
-            setUrl(jQuery("#zendesk_id").val());
-
-          jQuery("#zendesk_id").on("change", function() {
-            setUrl(jQuery(this).val());
-          });
-        });
-
-        function setUrl(subDomain) {
-          jQuery("#zendesk-chat-widget-link").attr("href", "https://" + subDomain + ".zendesk.com/agent/admin/widget");
-        }
-      </script>
-    ';
+    echo '<img src="https://d16cvnquvjw7pr.cloudfront.net/www/img/p-brand/downloads/Logo/Zendesk_logo_RGB.png" alt="Zendesk" width="150" style="float: right; margin-top: -80px;" /><br />
+          In order to use this plugin, you will need a <a href="http://zendesk.com" taret="_blank">Zendesk account</a> with the web widget enabled.<br />You can customize the Zendesk Widget with options like colors, widget placement, etc.<br /><br />
+          <a id="zendesk-chat-widget-link" href="https://www.zendesk.com/embeddables/#widget" class="button" target="_blank">Setup and Customize Zendesk Widget</a>';
   }
+
+  public function admin_scripts() { ?>
+    <script>
+      jQuery(function() {
+        setFields(jQuery("#zendesk_id").val());
+
+        jQuery("#zendesk_id").on("change", function() {
+          setFields(jQuery(this).val());
+        });
+      });
+
+      function setFields(subDomain) {
+        if (subDomain != "") {
+          jQuery("#zendesk-chat-widget-link").attr("href", "https://" + subDomain + ".zendesk.com/agent/admin/widget");
+          jQuery("#zendesk_enabled").removeAttr("disabled");
+          jQuery("#enable-check-instructions").text("Turn on the widget in WP Admin");
+        } else {
+          jQuery("#zendesk-chat-widget-link").attr("href", "https://www.zendesk.com/embeddables/#widget");
+          jQuery("#zendesk_enabled").attr("disabled", "disabled");
+          jQuery("#enable-check-instructions").text("You must enter your Zendesk subdomain to enable the widget");
+        }
+      }
+    </script>
+  <?php }
 
   public function sanitize( $input )
   {
