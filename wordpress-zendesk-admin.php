@@ -40,12 +40,12 @@ class Zendesk_Admin {
    * Admin Settings
    */
   public function admin_menu() {
-    add_options_page( 'Zendesk Dashboard Help Widget', 'Zendesk Help', 'manage_options', 'zendesk-admin', array( $this, 'admin_page' ));
+    add_options_page( 'Zendesk Admin Help Widget', 'Zendesk Help', 'manage_options', 'zendesk-admin', array( $this, 'admin_page' ));
   }
 
   public function admin_page() { ?>
     <div class="wrap">
-      <h2>Zendesk Admin Widget</h2>
+      <h2>Zendesk Admin Help Widget</h2>
       <form method="post" action="options.php">
         <?php
           // This prints out all hidden setting fields
@@ -66,7 +66,7 @@ class Zendesk_Admin {
 
     add_settings_section(
       'zendesk_admin_section', // ID
-      'Widget Options', // Title
+      'Using The Zendesk Help Widget', // Title
       array( $this, 'admin_print_section_info' ), // Callback
       'zendesk-admin-settings' // Page
     );
@@ -96,13 +96,32 @@ class Zendesk_Admin {
   public function zendesk_id_callback()
   {
     printf(
-      '<input type="text" id="zendesk_id" name="zendesk_admin_options[zendesk_id]" placeholder="mysite" value="%s" /> .zendesk.com',
+      '<input type="text" id="zendesk_id" name="zendesk_admin_options[zendesk_id]" placeholder="mysite" value="%s" /> .zendesk.com
+      <br /><small><i>Your Zendesk subdomain that you use to login as an agent</i></small>',
       isset( $this->options['zendesk_id'] ) ? esc_attr( $this->options['zendesk_id']) : ''
     );
   }
 
   public function admin_print_section_info() {
-    print 'Enter Zendesk Details';
+    echo '
+      <img src="https://d16cvnquvjw7pr.cloudfront.net/www/img/p-brand/downloads/Logo/Zendesk_logo_RGB.png" alt="Zendesk" width="150" style="float: right; margin-top: -80px;" /><br />
+      In order to use this plugin, you will need a <a href="http://zendesk.com" taret="_blank">Zendesk account</a> with the chat widget enabled.<br />You can customize the Zendesk Widget with options like colors, widget placement, etc.<br /><br />
+      <a id="zendesk-chat-widget-link" href="https://www.zendesk.com/embeddables/#widget" class="button" target="_blank">Setup and Customize Zendesk Widget</a>
+      <script>
+        jQuery(function() {
+          if (jQuery("#zendesk_id").val() != "")
+            setUrl(jQuery("#zendesk_id").val());
+
+          jQuery("#zendesk_id").on("change", function() {
+            setUrl(jQuery(this).val());
+          });
+        });
+
+        function setUrl(subDomain) {
+          jQuery("#zendesk-chat-widget-link").attr("href", "https://" + subDomain + ".zendesk.com/agent/admin/widget");
+        }
+      </script>
+    ';
   }
 
   public function sanitize( $input )
