@@ -72,6 +72,14 @@ class Zendesk_Admin {
     );
 
     add_settings_field(
+      'zendesk_enabled', // ID
+      'Enable Zendesk Help Widget', // Title
+      array( $this, 'zendesk_enabled_callback' ), // Callback
+      'zendesk-admin-settings', // Page
+      'zendesk_admin_section' // Section
+    );
+
+    add_settings_field(
       'zendesk_id', // ID
       'Zendesk Subdomain', // Title
       array( $this, 'zendesk_id_callback' ), // Callback
@@ -93,6 +101,15 @@ class Zendesk_Admin {
       'zendesk-admin-settings', // Page
       'zendesk_admin_advanced_section' // Section
     );
+  }
+
+  public function zendesk_enabled_callback()
+  {
+    if ( isset( $this->options['zendesk_enabled'] ) ) {
+      echo '<input type="checkbox" id="zendesk_enabled" name="zendesk_admin_options[zendesk_enabled]" value="1"' . checked( 1,  $this->options['zendesk_enabled'], false ) . '/>';
+    } else {
+      echo '<input type="checkbox" id="zendesk_enabled" name="zendesk_admin_options[zendesk_enabled]" value="1" />';
+    }
   }
 
   public function zendesk_id_callback()
@@ -121,17 +138,26 @@ class Zendesk_Admin {
 
   public function sanitize( $input )
   {
-    return $input;
-
     $new_input = array();
 
+    if( isset( $input['zendesk_id'] ) )
+      $new_input['zendesk_id'] = sanitize_text_field( $input['zendesk_id'] );
+
+    if( isset( $input['zendesk_enabled'] ) )
+      $new_input['zendesk_enabled'] = $input['zendesk_enabled'];
+    else
+      $new_input['zendesk_enabled'] = false;
+
     if( isset( $input['zendesk_script'] ) )
-      $new_input['zendesk_script'] = sanitize_text_field( $input['zendesk_script'] );
+      $new_input['zendesk_script'] = $input['zendesk_script'];
 
     return $new_input;
   }
 
   public function admin_widget() {
+    if ( !isset( $this->options['zendesk_enabled'] ) || 1 != $this->options['zendesk_enabled'])
+      exit;
+
     $current_user = wp_get_current_user();
     ?>
       <!-- Start of Zendesk Widget script -->
