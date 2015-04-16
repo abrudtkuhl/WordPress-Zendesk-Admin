@@ -1,4 +1,4 @@
-=== WordPress Admin Zendesk Help Widget ===
+=== Admin Zendesk Help Widget ===
 Contributors: abrudtkuhl
 Tags: zendesk, helpdesk
 Requires at least: 3.9

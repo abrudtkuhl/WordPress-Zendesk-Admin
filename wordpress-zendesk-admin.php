@@ -1,9 +1,9 @@
 <?php
 /*
- * Plugin Name: WordPresss Zendesk Admin
+ * Plugin Name: Zendesk Admin Help Widget
  * Version: 1.0
  * Plugin URI: https://github.com/abrudtkuhl/WordPress-Zendesk-Admin
- * Description: Adds a Zendesk help desk widget into the WordPress Dashboard
+ * Description: Adds a Zendesk help desk widget into WordPress admin
  * Author: Andy Brudtkuhl
  * Author URI: http://youmetandy.com
  * Requires at least: 4.0
