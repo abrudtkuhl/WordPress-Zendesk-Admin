@@ -40,7 +40,7 @@ class Zendesk_Admin {
    * Admin Settings
    */
   public function admin_menu() {
-    add_options_page( 'Zendesk Admin Help Widget', 'Zendesk Help', 'manage_options', 'zendesk-admin', array( $this, 'admin_page' ));
+    add_options_page( 'Zendesk Dashboard Help Widget', 'Zendesk Help', 'manage_options', 'zendesk-admin', array( $this, 'admin_page' ));
   }
 
   public function admin_page() { ?>
@@ -86,30 +86,11 @@ class Zendesk_Admin {
       'zendesk-admin-settings', // Page
       'zendesk_admin_section' // Section
     );
-
-    add_settings_section(
-      'zendesk_admin_advanced_section',
-      'Advanced Options',
-      array( $this, 'admin_print_advanced_instructions'),
-      'zendesk-admin-settings'
-    );
-
-    add_settings_field(
-      'zendesk_script', // ID
-      'Zendesk Script', // Title
-      array( $this, 'zendesk_script_callback' ), // Callback
-      'zendesk-admin-settings', // Page
-      'zendesk_admin_advanced_section' // Section
-    );
   }
 
   public function zendesk_enabled_callback()
   {
-    if ( isset( $this->options['zendesk_enabled'] ) ) {
-      echo '<input type="checkbox" id="zendesk_enabled" name="zendesk_admin_options[zendesk_enabled]" value="1"' . checked( 1,  $this->options['zendesk_enabled'], false ) . '/>';
-    } else {
-      echo '<input type="checkbox" id="zendesk_enabled" name="zendesk_admin_options[zendesk_enabled]" value="1" />';
-    }
+    echo '<input type="checkbox" id="zendesk_enabled" name="zendesk_admin_options[zendesk_enabled]" value="1"' . checked( 1,  $this->options['zendesk_enabled'], false ) . '/>';
   }
 
   public function zendesk_id_callback()
@@ -120,20 +101,8 @@ class Zendesk_Admin {
     );
   }
 
-  public function zendesk_script_callback()
-  {
-    printf(
-      '<textarea rows="10" cols="80" type="textarea" id="zendesk_script" name="zendesk_admin_options[zendesk_script]" placeholder="">%s</textarea>',
-      isset( $this->options['zendesk_script'] ) ? esc_attr( $this->options['zendesk_script']) : ''
-    );
-  }
-
   public function admin_print_section_info() {
     print 'Enter Zendesk Details';
-  }
-
-  public function admin_print_advanced_instructions() {
-    print 'ADVANCED USE ONLY';
   }
 
   public function sanitize( $input )
@@ -148,12 +117,12 @@ class Zendesk_Admin {
     else
       $new_input['zendesk_enabled'] = false;
 
-    if( isset( $input['zendesk_script'] ) )
-      $new_input['zendesk_script'] = $input['zendesk_script'];
-
     return $new_input;
   }
 
+  /**
+   * Render Widget in dashboard
+   */
   public function admin_widget() {
     if ( !isset( $this->options['zendesk_enabled'] ) || 1 != $this->options['zendesk_enabled'])
       exit;
